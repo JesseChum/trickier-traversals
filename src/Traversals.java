@@ -90,18 +90,22 @@ public class Traversals {
    */
   public static int countDistinctValues(TreeNode<Integer> node) {
     Set<Integer> uniqueValues = new HashSet<>();
-    collectValues(node, uniqueValues);
-    return uniqueValues.size();
-  }
-  private static void collectValues(TreeNode<Integer> node, Set<Integer> uniqueValues) {
-    if (node == null){
-      return;
+    Stack<TreeNode<Integer>> stack = new Stack<>();
+    stack.push(node);
+  
+    while (!stack.isEmpty()){
+      TreeNode<Integer> current = stack.pop();
+      uniqueValues.add(current.value);
+
+      if (current.right != null){
+        stack.push(current.right);
+      }
+
+      if (current.left != null){
+        stack.push(current.left);
+      }
     }
-
-    uniqueValues.add(node.getValue());
-
-    collectValues(node.getLeft(), uniqueValues);
-    colletValues (node.getRight(), uniqueValues);
+    return uniqueValues.size();
   }
   /**
    * Determines whether there is at least one root-to-leaf path in the tree
