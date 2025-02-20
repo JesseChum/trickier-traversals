@@ -65,7 +65,20 @@ public class Traversals {
    */
   public static <T> List<T> collectLevelOrderValues(TreeNode<T> node) {
     List<T> result = new ArrayList<>();
+    if (node == null) return result;
     
+    Queue<TreeNode<T>> queue = new LinkedList<>();
+    queue.add(node);
+
+    while (!queue.isEmpty()){
+      TreeNode<T> current = queue.poll();
+      result.add(current.value);
+
+      if (current.left != null) queue.add(current.left);
+      if (current.right != null) queue.add(current.right);
+    }
+
+    return result;
   }
 
   /**
@@ -77,8 +90,19 @@ public class Traversals {
    */
   public static int countDistinctValues(TreeNode<Integer> node) {
     Set<Integer> uniqueValues = new HashSet<>();
-    
+    collectValues(node, uniqueValues);
+    return uniqueValues.size();
+  }
+  private static void collectValues(TreeNode<Integer> node, Set<Integer> uniqueValues) {
+    if (node == null){
+      return;
+    }
 
+    uniqueValues.add(node.getValue());
+
+    collectValues(node.getLeft(), uniqueValues);
+    colletValues (node.getRight(), uniqueValues);
+  }
   /**
    * Determines whether there is at least one root-to-leaf path in the tree
    * where each successive node's value is strictly greater than the previous node's value.
@@ -88,7 +112,19 @@ public class Traversals {
    * @return true if there exists a strictly increasing root-to-leaf path, false otherwise
    */
   public static boolean hasStrictlyIncreasingPath(TreeNode<Integer> node) {
-    
+      if (node == null) return false;
+      return checkIncreasingPath(node, Integer.MIN_VALUE);
+  }
+    //made a helper method 
+    private static boolean checkIncreasingPath(TreeNode<Integer> node, int prevValue){
+      if (node == null) return false;
+
+      if (node.value <= prevValue) return false;
+  
+      if (node.left == null && node.right == null) return true;
+  
+      return checkIncreasingPath(node.left, node.value) || checkIncreasingPath(node.right, node.value);
+    }
   // OPTIONAL CHALLENGE
   /**
    * Checks if two trees have the same shape. Two trees have the same shape
